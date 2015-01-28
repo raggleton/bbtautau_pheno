@@ -1,0 +1,9 @@
+Attached you find the Pythia code for the bbtautau signal event generation. It also does the bbmumu analysis so for that channel one just have to change the decay channel for the A_1.
+
+Some words on the code. I removed some unused functions, I think it is actually rather clear what things does now. It needs Pythia and FastJet to compile and the variable p8 (Pythia location) and FASTJETLOCATION has do be defined (I included the Makefile).
+
+The idea in the code is that MyJet.cc contains all information about the Jets (the only part that talks to FatsJet) including tagging (which is now done using MC truth but you probably want to change that) and jet substructure studies. MyEvent.cc contains all information about the event (one also reaches the Jet data from there) and give you invariant mass distributions and spectra. It also contains functions for the analyses e.g. "bbtau" returns true if there are exactly 2 tau-jets and 2 b-jets in the event and it fill the histograms when the event passes the respective constraint. "bbtauSub" does the same but ask for 2 tau-jets and a fat jet (i.e. "Sub" for Substructure analyses).
+
+MyProcess.cc does the same as MyEvent.cc but at parton level, it is not used much now, I added it to compare to earlier results.
+
+bbtauHist.cc handles all the histograms related to the bbtautau analyses and Simul.cc runs the simulation. The main program is bbtata.cc.
