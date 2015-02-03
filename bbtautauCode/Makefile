@@ -8,16 +8,16 @@
 SHELL = /bin/sh
 CXX = g++
 
-# Set PYTHIA8LOCATION, FASTJETLOCATION, HEPMC yourself
+# Set PYTHIA8LOCATION, FASTJETLOCATION, HEPMCLOCATION yourself
 PYTHIA8LOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/pythia8/185
-# PYTHIA8LOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/pythia8/185
+PYTHIA8LOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/pythia8/201
 
 # FASTJETLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/fastjet/3.1.0
 FASTJETLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/fastjet/3.0.3-cms
 # FASTJETLOCATION = /users/ra12451/fastjet-install
 
-HEPMC = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/hepmc/2.06.07-cms3
-# HEPMC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/hepmc/2.06.07-cms3
+HEPMCLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/hepmc/2.06.07-cms3
+# HEPMCLOCATION=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/hepmc/2.06.07-cms3
 
 # CXX_COMMON = -ansi -pedantic -W -Wall -Wshadow -fPIC
 CXX_COMMON:=-I$(PYTHIA8LOCATION)/include $(CXX_COMMON) -Wl,-rpath $(PYTHIA8LOCATION)/lib -ldl
@@ -37,53 +37,65 @@ PYTHIA8LOCATION_LIB=$(PYTHIA8LOCATION)/lib
 PYTHIA8LOCATION_LIBARCH=$(PYTHIA8LOCATION)/lib/archive
 PYTHIA8LOCATION_BIN=$(PYTHIA8LOCATION)/bin
 
-HEPMC_INC=$(HEPMC)/include
-HEPMC_LIB=$(HEPMC)/lib
+HEPMCLOCATION_INC=$(HEPMCLOCATION)/include
+HEPMCLOCATION_LIB=$(HEPMCLOCATION)/lib
 
 # There is no default behaviour, so remind user.
 # Run using e.g. make bbtata
 .cc:
 	# $(CXX) -I$(PYTHIA8LOCATION)/$(INCDIR) $@.cc  \
 	# `$(FASTJETLOCATION)/bin/fastjet-config --cxxflags  --plugins` \
-	# -I$(HEPMC_INC) \
+	# -I$(HEPMCLOCATION_INC) \
 	# $(CXXFLAGSNO) -o $@.exe \
-	# -L$(HEPMC_LIB) -Wl,-rpath $(HEPMC_LIB) -lHepMC \
+	# -L$(HEPMCLOCATION_LIB) -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC \
 	# -L$(PYTHIA8LOCATION_LIB) -L$(PYTHIA8LOCATION)/lib/archive -lpythia8 -llhapdfdummy \
-	# -lpythia8tohepmc  -Wl,-rpath $(HEPMC_LIB) -lHepMC \
+	# -lpythia8tohepmc  -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC \
 	# -L$(FASTJETLOCATION)/lib \
 	# `$(FASTJETLOCATION)/bin/fastjet-config --libs --plugins` \
 	# -pthread -std=c++11 -O2 $(CXX_COMMON)
 # 	# -llhapdfdummy \
 
+	# For Pythia 8.1X
     # Note: $(CXXFLAGS) is after Fastjet flags as Fastjet includes
     #       optimisation/debug flags which may be unwanted (e.g. -g -O2)
-	echo $(HEPMCLOCATION)
-	$(CXX) -I$(PYTHIA8LOCATION)/$(INCDIR) $@.cc \
-	`$(FASTJETLOCATION)/bin/fastjet-config --cxxflags --plugins` \
-	$(CXXFLAGS) -Wno-shadow \
-	-I$(PYTHIA8LOCATION)/$(INCDIR) -I$(HEPMC)/include \
-	-o $@.exe \
-	-L$(PYTHIA8LOCATION)/$(LIBDIR) -L$(PYTHIA8LOCATION)/$(LIBDIRARCH) -lpythia8 -llhapdfdummy \
-	-lpythia8tohepmc \
-	-L$(HEPMC)/lib -Wl,-rpath $(HEPMC_LIB) -lHepMC \
-	-L$(FASTJETLOCATION)/lib \
-	`$(FASTJETLOCATION)/bin/fastjet-config --libs --plugins` \
-	-pthread -std=c++11
+	# $(CXX) -I$(PYTHIA8LOCATION)/$(INCDIR) $@.cc \
+	# `$(FASTJETLOCATION)/bin/fastjet-config --cxxflags --plugins` \
+	# $(CXXFLAGS) -Wno-shadow \
+	# -I$(PYTHIA8LOCATION)/$(INCDIR) -I$(HEPMCLOCATION)/include \
+	# -o $@.exe \
+	# -L$(PYTHIA8LOCATION)/$(LIBDIR) -L$(PYTHIA8LOCATION)/$(LIBDIRARCH) -lpythia8 -llhapdfdummy \
+	# -lpythia8tohepmc \
+	# -L$(HEPMCLOCATION)/lib -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC \
+	# -L$(FASTJETLOCATION)/lib \
+	# `$(FASTJETLOCATION)/bin/fastjet-config --libs --plugins` \
+	# -pthread -std=c++11
 	# -L$(LHAPDFLOCATION) $(LHAPDFLIBNAME) \
 	# -L$(LHAPDFLOCATION)/lib \
 
-
-# main41:
 	# For pythia 8.2X
-	# $(CXX) $@.cc $(PYTHIA8LOCATION)/lib/libpythia8.so -o $@ -I$(HEPMC_INC) $(CXX_COMMON) \
-	# -L$(HEPMC_LIB) -Wl,-rpath $(HEPMC_LIB) -lHepMC
+	# make sure you do cmsenv in CMSSW_7_3_0/src
+	$(CXX) -I$(PYTHIA8LOCATION)/$(INCDIR) $@.cc \
+	`$(FASTJETLOCATION)/bin/fastjet-config --cxxflags --plugins` \
+	$(CXXFLAGS) -Wno-shadow \
+	-I$(PYTHIA8LOCATION)/$(INCDIR) -I$(HEPMCLOCATION)/include \
+	-o $@.exe \
+	-L$(PYTHIA8LOCATION)/$(LIBDIR) -L$(PYTHIA8LOCATION)/$(LIBDIRARCH) -lpythia8 \
+	-L$(HEPMCLOCATION)/lib -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC \
+	-L$(FASTJETLOCATION)/lib \
+	`$(FASTJETLOCATION)/bin/fastjet-config --libs --plugins` \
+	-pthread -std=c++11 -O2
+
+main41:
+	# For pythia 8.2X
+	# $(CXX) $@.cc $(PYTHIA8LOCATION)/lib/libpythia8.so -o $@ -I$(HEPMCLOCATION_INC) $(CXX_COMMON) \
+	# -L$(HEPMCLOCATION_LIB) -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC
 
 	# For pythia 8.1X
-	# $(CXX) $@.cc -o $@ -I$(HEPMC_INC) $(CXX_COMMON) \
-	# -L$(HEPMC_LIB) \
-	# -L$(PYTHIA8LOCATION)/lib/archive -lpythia8 -llhapdfdummy  \
-	# -lpythia8tohepmc \
-	# -Wl,-rpath $(HEPMC_LIB) -lHepMC
+	$(CXX) $@.cc -o $@ -I$(HEPMCLOCATION_INC) $(CXX_COMMON) \
+	-L$(HEPMCLOCATION_LIB) \
+	-L$(PYTHIA8LOCATION)/lib/archive -lpythia8 -llhapdfdummy  \
+	-lpythia8tohepmc \
+	-Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC
 
 #	$(CXX) $(CXXFLAGS) -I$(PYTHIA8LOCATION_INC) $@.cc -o $@.exe  \
 #	-L$(PYTHIA8LOCATION_LIBARCH) -lpythia8 -llhapdfdummy
