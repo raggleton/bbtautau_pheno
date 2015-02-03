@@ -5,6 +5,10 @@
 #include "Pythia8/Pythia.h"
 #include "fastjet/PseudoJet.hh"
 #include "fastjet/ClusterSequence.hh"
+// #include "Pythia8Plugins/HepMC2.h"
+#include "Pythia8/Pythia8ToHepMC.h"
+#include "HepMC/GenEvent.h"
+#include "HepMC/IO_GenEvent.h"
 #include "MyJet.cc"
 #include "MyEvent.cc"
 #include "MyProcess.cc"
@@ -19,7 +23,7 @@ void runSim(int ma1) {
   stringstream Sa1;
   Sa1 << ma1;
   simul = new Simul(Sa1.str());
-  simul->run(10000);
+  simul->run(50);
   delete simul;
 }
 

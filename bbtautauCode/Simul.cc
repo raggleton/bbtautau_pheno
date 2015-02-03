@@ -8,7 +8,11 @@ using namespace Pythia8;
 
 class Simul {
 private:
-  string file;
+  // Interface for conversion from Pythia8::Event to HepMC event.
+  HepMC::Pythia8ToHepMC ToHepMC;
+  // Specify file where HepMC events will be stored.
+  HepMC::IO_GenEvent ascii_io;
+  string file = "test.txt";
   Pythia pythia;
   MyEvent *event;
   MyProcess *process;
@@ -24,7 +28,7 @@ public:
   void run(int nEvnt);
 };
 
-Simul::Simul(string model) {
+Simul::Simul(string model): ascii_io("hepmcout41.dat", std::ios::out) {
   pythia.readString("HiggsSM:gg2H = on");
   pythia.readString("25:m0 = 125.");
   for (int i = 0; i < 76; i++) {
@@ -57,6 +61,7 @@ Simul::~Simul() {
 
 void Simul::run(int nEvnt) {
   for (int iEvent = 0; iEvent < nEvnt; ++iEvent) {
+    cout << "Event start" << endl;
     if (!pythia.next()) {
       break;
     }
@@ -65,24 +70,40 @@ void Simul::run(int nEvnt) {
       pythia.event.list();
       pythia.process.list();
     }
-    process = new MyProcess(&pythia);
+    cout << "Event end" << endl;
+    // process = new MyProcess(&pythia);
+    cout << "Event end2" << endl;
 
-    event = new MyEvent(&pythia, 0.4);
-    bbmuanalyse();
-    bbtauanalyse();
-    delete event;
-    delete process;
+    // event = new MyEvent(&pythia, 0.4);
+    cout << "Event end3" << endl;
+    // bbmuanalyse();
+    // bbtauanalyse();
+    cout << "Event end4" << endl;
+    // delete event;
+    // delete process;
+
+    // Construct new empty HepMC event and fill it.
+    // Units will be as chosen for HepMC build; but can be changed
+    // by arguments, e.g. GenEvt( HepMC::Units::GEV, HepMC::Units::MM)
+    HepMC::GenEvent* hepmcevt = new HepMC::GenEvent( HepMC::Units::GEV, HepMC::Units::MM);
+    cout << "Event end5" << endl;
+    ToHepMC.fill_next_event(pythia, hepmcevt );
+    cout << "Event end6" << endl;
+
+    // Write the HepMC event to file. Done with it.
+    ascii_io << hepmcevt;
+    delete hepmcevt;
   }
-  ofstream OutFile;
-  OutFile.open(file.c_str());
-  OutFile << bbmudata->GetN() << endl;
-  OutFile << bbtaudata->GetN() << endl;
-  OutFile.close();
+  // ofstream OutFile;
+  // OutFile.open(file.c_str());
+  // OutFile << bbmudata->GetN() << endl;
+  // OutFile << bbtaudata->GetN() << endl;
+  // OutFile.close();
 
-  cout << bbmudata->GetN() << endl;
-  cout << bbtaudata->GetN() << endl;
-  bbmudata->Save();
-  bbtaudata->Save();
+  // cout << bbmudata->GetN() << endl;
+  // cout << bbtaudata->GetN() << endl;
+  // bbmudata->Save();
+  // bbtaudata->Save();
   pythia.stat();
 }
 
