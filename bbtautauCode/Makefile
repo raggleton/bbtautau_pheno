@@ -8,16 +8,17 @@
 SHELL = /bin/sh
 CXX = g++
 
-# Set PYTHIA8LOCATION, FASTJETLOCATION, HEPMCLOCATION yourself
-PYTHIA8LOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/pythia8/185
+# Set PYTHIA8LOCATION, FASTJETLOCATION, HEPMC yourself
+# PYTHIA8LOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/pythia8/185
 PYTHIA8LOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/pythia8/201
 
 # FASTJETLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/fastjet/3.1.0
-FASTJETLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/fastjet/3.0.3-cms
-# FASTJETLOCATION = /users/ra12451/fastjet-install
+# FASTJETLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/fastjet/3.0.3-cms
+FASTJETLOCATION = /users/ra12451/fastjet-install
 
-HEPMCLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/hepmc/2.06.07-cms3
-# HEPMCLOCATION=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/hepmc/2.06.07-cms3
+# Don't call it HEPMCLOCATION beacuse it defaults to /build/degano not cvmsfs for some stupid reason!!
+# HEPMC = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/hepmc/2.06.07-cms3
+HEPMC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/hepmc/2.06.07-cms3
 
 # CXX_COMMON = -ansi -pedantic -W -Wall -Wshadow -fPIC
 CXX_COMMON:=-I$(PYTHIA8LOCATION)/include $(CXX_COMMON) -Wl,-rpath $(PYTHIA8LOCATION)/lib -ldl
@@ -37,8 +38,8 @@ PYTHIA8LOCATION_LIB=$(PYTHIA8LOCATION)/lib
 PYTHIA8LOCATION_LIBARCH=$(PYTHIA8LOCATION)/lib/archive
 PYTHIA8LOCATION_BIN=$(PYTHIA8LOCATION)/bin
 
-HEPMCLOCATION_INC=$(HEPMCLOCATION)/include
-HEPMCLOCATION_LIB=$(HEPMCLOCATION)/lib
+HEPMCLOCATION_INC=$(HEPMC)/include
+HEPMCLOCATION_LIB=$(HEPMC)/lib
 
 # There is no default behaviour, so remind user.
 # Run using e.g. make bbtata
@@ -61,11 +62,11 @@ HEPMCLOCATION_LIB=$(HEPMCLOCATION)/lib
 	# $(CXX) -I$(PYTHIA8LOCATION)/$(INCDIR) $@.cc \
 	# `$(FASTJETLOCATION)/bin/fastjet-config --cxxflags --plugins` \
 	# $(CXXFLAGS) -Wno-shadow \
-	# -I$(PYTHIA8LOCATION)/$(INCDIR) -I$(HEPMCLOCATION)/include \
+	# -I$(PYTHIA8LOCATION)/$(INCDIR) -I$(HEPMC)/include \
 	# -o $@.exe \
 	# -L$(PYTHIA8LOCATION)/$(LIBDIR) -L$(PYTHIA8LOCATION)/$(LIBDIRARCH) -lpythia8 -llhapdfdummy \
 	# -lpythia8tohepmc \
-	# -L$(HEPMCLOCATION)/lib -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC \
+	# -L$(HEPMC)/lib -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC \
 	# -L$(FASTJETLOCATION)/lib \
 	# `$(FASTJETLOCATION)/bin/fastjet-config --libs --plugins` \
 	# -pthread -std=c++11
@@ -77,10 +78,10 @@ HEPMCLOCATION_LIB=$(HEPMCLOCATION)/lib
 	$(CXX) -I$(PYTHIA8LOCATION)/$(INCDIR) $@.cc \
 	`$(FASTJETLOCATION)/bin/fastjet-config --cxxflags --plugins` \
 	$(CXXFLAGS) -Wno-shadow \
-	-I$(PYTHIA8LOCATION)/$(INCDIR) -I$(HEPMCLOCATION)/include \
+	-I$(PYTHIA8LOCATION)/$(INCDIR) -I$(HEPMC)/include \
 	-o $@.exe \
 	-L$(PYTHIA8LOCATION)/$(LIBDIR) -L$(PYTHIA8LOCATION)/$(LIBDIRARCH) -lpythia8 \
-	-L$(HEPMCLOCATION)/lib -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC \
+	-L$(HEPMC)/lib -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC \
 	-L$(FASTJETLOCATION)/lib \
 	`$(FASTJETLOCATION)/bin/fastjet-config --libs --plugins` \
 	-pthread -std=c++11 -O2
