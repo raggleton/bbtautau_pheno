@@ -5,12 +5,13 @@
 #include "Pythia8/Pythia.h"
 #include "fastjet/PseudoJet.hh"
 #include "fastjet/ClusterSequence.hh"
-// for Pythia 8.2X
+/* for Pythia 8.2X */
 #include "Pythia8Plugins/HepMC2.h"
-// These 3 lines for Pythia 8.1X
+/* These 3 lines for Pythia 8.1X */
 // #include "Pythia8/Pythia8ToHepMC.h"
 // #include "HepMC/GenEvent.h"
 // #include "HepMC/IO_GenEvent.h"
+#include <boost/lexical_cast.hpp>
 
 #include "MyJet.cc"
 #include "MyEvent.cc"
@@ -25,8 +26,9 @@ void runSim(int ma1) {
   Simul *simul;
   stringstream Sa1;
   Sa1 << ma1;
-  simul = new Simul(Sa1.str());
-  simul->run(10);
+  simul = new Simul(boost::lexical_cast<std::string> (ma1));
+  // simul = new Simul(Sa1.str());
+  simul->run(1000);
   delete simul;
 }
 
