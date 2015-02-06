@@ -3,8 +3,20 @@
 // #include <string>
 // #include "Pythia.h"
 // #include "MyEvent.cc"
+#include <boost/algorithm/string.hpp>
+using namespace boost::algorithm;
 using namespace std;
 using namespace Pythia8;
+
+std::string getCurrentTime() {
+    // current date/time based on current system
+  time_t now = time(0);
+  // convert now to string form
+  char* dt = ctime(&now);
+  std::string str1 = std::string(dt);
+  trim(str1);
+  return str1;
+}
 
 class Simul {
 public:
@@ -26,11 +38,14 @@ private:
   bbtauHist *bbtaudata;
   void bbmuanalyse();
   void bbtauanalyse();
+  // Text file to write progress - handy for monitoring during PBS jobs
+  ofstream myfile;
 };
 
 Simul::Simul(string model):
   ascii_io("bbtautau.hepmc", std::ios::out)
 {
+  myfile.open("_progress.txt");
   /**
    * Setup pythia to produce gg->h(125)->AA,
    * and A->bb or A->tautau
@@ -68,7 +83,12 @@ Simul::~Simul() {
 }
 
 void Simul::run(int nEvnt) {
+  int outputEvery = 50;
   for (int iEvent = 0; iEvent < nEvnt; ++iEvent) {
+    if (iEvent % outputEvery == 0){
+      cout << "iEvent: " << iEvent << " - " << getCurrentTime() << endl;
+      myfile << "iEvent: " << iEvent << " - " << getCurrentTime() << endl;
+    }
     if (!pythia.next()) {
       break;
     }
@@ -114,4 +134,3 @@ void Simul::bbtauanalyse() {
    // Zbbdata->AddEvent();
   bbtaudata->Fill(process, event);
 }
-
