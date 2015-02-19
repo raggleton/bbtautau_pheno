@@ -111,7 +111,7 @@ class PythiaProgramOpts
             if (printEvent_)
                 cout << "Outputting first event" << endl;
             if (writeToHEPMC_)
-                cout << "Writing events to hepmc file " << filename_ << ".hepmc" << endl;
+                cout << "Writing events to hepmc file " << filename_ << endl;
             cout << "Doing " << nEvents_ << " events" << endl;
             cout << "Random seed: " << seed_ << endl;
             cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
