@@ -9,12 +9,14 @@ notify_user = robin.aggleton@bristol.ac.uk
 
 request_cpus = 1
 request_memory = 500
+request_disk = 30000000
 
 # use the ENV that is provided
 getenv = true
 initialdir = /storage/ra12451/bbtautau
 transfer_input_files = /users/ra12451/bbtautau_pheno/bbtautauCode/bbtautau.exe
 
-arguments = -n 1000 --write --mass 15 --seed 15 --name bbtautau_ma1_15_1000.hepmc
-queue
+# Example:
+# arguments = -n 1000 --write --mass 15 --seed 15 --name bbtautau_ma1_15_1000.hepmc
+# queue
 
