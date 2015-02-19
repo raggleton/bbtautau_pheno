@@ -16,27 +16,29 @@ LIBDIRARCH=lib/archive
 BINDIR=bin
 
 # Set PYTHIA8LOCATION, FASTJETLOCATION, HEPMC yourself
+
 # PYTHIA8LOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/pythia8/185
-PYTHIA8LOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/pythia8/201
+# PYTHIA8LOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/pythia8/201
+PYTHIA8LOCATION = /cvmfs/sft.cern.ch/lcg/external/MCGenerators_lcgcmt67b/pythia8/205/x86_64-slc6-gcc48-opt/
 PYTHIA8LOCATION_INC=$(PYTHIA8LOCATION)/include
 PYTHIA8LOCATION_LIB=$(PYTHIA8LOCATION)/lib
 PYTHIA8LOCATION_LIBARCH=$(PYTHIA8LOCATION)/lib/archive
 PYTHIA8LOCATION_BIN=$(PYTHIA8LOCATION)/bin
 
-# FASTJETLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/fastjet/3.1.0
 # FASTJETLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/fastjet/3.0.3-cms
 FASTJETLOCATION = /users/ra12451/fastjet-install
 FASTJETLOCATION_LIB = $(FASTJETLOCATION)/lib
 
 # Don't call it HEPMCLOCATION beacuse it defaults to /build/degano not cvmsfs for some stupid reason!!
-# HEPMC = /cvmfs/cms.cern.ch/slc6_amd64_gcc472/external/hepmc/2.06.07-cms3
-HEPMC = /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/hepmc/2.06.07-cms3
+# HEPMC = /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/hepmc/2.06.07-cms3
+HEPMC = /cvmfs/sft.cern.ch/lcg/external/HepMC/2.06.08/x86_64-slc6-gcc48-opt/
 HEPMCLOCATION_INC=$(HEPMC)/include
 HEPMCLOCATION_LIB=$(HEPMC)/lib
 
 # For boost libraries
+# /cvmfs/sft.cern.ch/lcg/external/Boost/1.53.0_python2.7/x86_64-slc6-gcc48-opt/
 BOOSTLOCATION = /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.57.0/
-BOOSTLOCATION_INC = -I$(BOOSTLOCATION)/include
+BOOSTLOCATION_INC = $(BOOSTLOCATION)/include
 BOOSTLOCATION_LIB = -L$(BOOSTLOCATION)/lib -lboost_program_options -Wl,-rpath $(BOOSTLOCATION)/lib
 
 # CXX_COMMON = -ansi -pedantic -W -Wall -Wshadow -fPIC
@@ -85,7 +87,7 @@ CXX_COMMON:=-I$(PYTHIA8LOCATION)/include $(CXX_COMMON) -Wl,-rpath $(PYTHIA8LOCAT
 	`$(FASTJETLOCATION)/bin/fastjet-config --cxxflags --plugins` \
 	$(CXXFLAGS) -Wno-shadow \
 	-I$(PYTHIA8LOCATION)/include -I$(HEPMCLOCATION_INC) \
-	$(BOOSTLOCATION_INC) \
+	-I$(BOOSTLOCATION_INC) \
 	-o $@.exe \
 	-L$(PYTHIA8LOCATION)/lib -L$(PYTHIA8LOCATION_LIBARCH) -lpythia8 \
 	-L$(HEPMCLOCATION_LIB) -Wl,-rpath $(HEPMCLOCATION_LIB) -lHepMC \
@@ -93,6 +95,7 @@ CXX_COMMON:=-I$(PYTHIA8LOCATION)/include $(CXX_COMMON) -Wl,-rpath $(PYTHIA8LOCAT
 	`$(FASTJETLOCATION)/bin/fastjet-config --libs --plugins` \
 	$(BOOSTLOCATION_LIB) \
 	-pthread -std=c++11 -O2
+	# -pedantic -Wall -fPIC
 
 main41:
 	# For pythia 8.2X
