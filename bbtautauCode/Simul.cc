@@ -33,7 +33,7 @@ public:
 private:
     // Interface for conversion from Pythia8::Event to HepMC event.
     HepMC::Pythia8ToHepMC ToHepMC;
-    HepMC::IO_GenEvent ascii_io;
+    HepMC::IO_GenEvent * ascii_io;
 
     Pythia pythia;
     PythiaProgramOpts opts_;
@@ -43,9 +43,12 @@ private:
 
 
 Simul::Simul(PythiaProgramOpts opts):
-    ascii_io(opts.filename(), std::ios::out),
     opts_(opts)
 {
+    if (opts_.writeToHEPMC()) {
+        ascii_io = new HepMC::IO_GenEvent(opts_.filename(), std::ios::out);
+    }
+
     // Setup file to write progress
     std::string ext = ".hepmc";
     std::string stem = opts_.filename().substr(0, opts_.filename().size() - ext.size());
@@ -117,7 +120,7 @@ void Simul::run(int nEvnt) {
         if (opts_.writeToHEPMC()) {
             HepMC::GenEvent* hepmcevt = new HepMC::GenEvent(HepMC::Units::GEV, HepMC::Units::MM);
             ToHepMC.fill_next_event(pythia, hepmcevt);
-            ascii_io << hepmcevt;
+            *ascii_io << hepmcevt;
             delete hepmcevt;
         }
 
