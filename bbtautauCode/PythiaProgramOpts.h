@@ -52,7 +52,7 @@ class PythiaProgramOpts
                     "the default filename will be ma1_<mass>_<seed>.hepmc")
                 ("mass", po::value<double>(&mass_)->default_value(15),
                     "Mass of a1 boson in GeV")
-                ("seed", po::value<int>(&seed_),
+                ("seed", po::value<int>(&seed_)->default_value(0),
                     "Seed for random number generator. 0 = uses time. " \
                     "WARNING: DON'T USE 0 FOR BATCH SYSTEM. " \
                     "Get simultaneous start = same seed = same events. " \
@@ -111,13 +111,11 @@ class PythiaProgramOpts
             cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
             cout << "PYTHIA PROGRAM OPTIONS" << endl;
             cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-
-            if (printEvent_)
-                cout << "Outputting first event" << endl;
             if (writeToHEPMC_)
                 cout << "Writing events to hepmc file " << filename_ << endl;
             cout << "Doing " << nEvents_ << " events" << endl;
             cout << "Random seed: " << seed_ << endl;
+            cout << "Mass of a1: " << mass_ << endl;
             cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
         }
 

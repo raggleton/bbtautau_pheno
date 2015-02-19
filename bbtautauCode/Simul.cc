@@ -47,8 +47,16 @@ Simul::Simul(PythiaProgramOpts opts):
     opts_(opts)
 {
     // Setup file to write progress
-    std::string stem = opts_.filename().substr(0,opts_.filename().size() - 6);
-    myfile.open(stem+"_progress.txt");
+    std::string ext = ".hepmc";
+    std::string stem = opts_.filename().substr(0, opts_.filename().size() - ext.size());
+    myfile.open(stem + "_progress.txt");
+
+    ///////////////////////
+    // SETUP PYTHIA HERE //
+    ///////////////////////
+    pythia.readString("Random:setSeed = on");
+    pythia.readString("Random:seed = " + boost::lexical_cast<std::string>(opts_.seed()));
+    pythia.readString("Next:numberShowEvent = 00");
 
     /**
      * Setup pythia to produce gg->h(125)->AA,
@@ -57,6 +65,7 @@ Simul::Simul(PythiaProgramOpts opts):
     pythia.readString("HiggsSM:gg2H = on");
     pythia.readString("25:m0 = 125.");
     for (int i = 0; i < 76; i++) {
+        // turn off all h(125) decay modes
         stringstream SSt;
         SSt << i;
         pythia.readString("25:" + SSt.str() + ":onMode = off");
