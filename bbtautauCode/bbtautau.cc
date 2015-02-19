@@ -19,6 +19,16 @@
 using namespace std;
 using namespace Pythia8;
 
+
+/**
+ * @brief Main script for generating MC events
+ * @details [long description]
+ *
+ * @param argc [description]
+ * @param argv [description]
+ *
+ * @return [description]
+ */
 int main(int argc, char *argv[]) {
 
   PythiaProgramOpts opts(argc, argv);
