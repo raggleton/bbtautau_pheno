@@ -34,7 +34,8 @@ class PythiaProgramOpts
             verbose_(false),
             seed_(0)
         {
-            po::options_description desc("\nProduces gg -> h(125) -> AA, A->2b or A-> 2 tau.\nAllowed options:");
+            po::options_description desc("\nProduces gg -> h(125) -> AA, with " \
+                "A->2b or A-> 2 tau.\nAllowed options:");
             desc.add_options()
                 ("help,h", "Produce help message")
                 ("printEvent", po::bool_switch(&printEvent_)->default_value(false),
@@ -42,7 +43,9 @@ class PythiaProgramOpts
                 ("write", po::bool_switch(&writeToHEPMC_)->default_value(false),
                     "write events to file in HepMC format")
                 ("number,n", po::value<int>(&nEvents_)->default_value(1),
-                    "Number of events to run over [default = 1]. If writeHLT enabled, counts # events passing HLT. Otherwise, counts # events with 2+ muons.")
+                    "Number of events to run over [default = 1]. " \
+                    "If writeHLT enabled, counts # events passing HLT. " \
+                    "Otherwise, counts # events with 2+ muons.")
                 ("name", po::value<std::string>(&filename_),
                     "Filename for output HepMC filename. " \
                     "If you don't provide a value but enable -write, " \
@@ -82,7 +85,8 @@ class PythiaProgramOpts
 
             // Setup filename
             if (writeToHEPMC_ && filename_ == "") {
-                filename_ = "ma1_" + boost::lexical_cast<std::string>(mass_) + "_" + boost::lexical_cast<std::string>(seed_) + ".hepmc";
+                filename_ = "ma1_" + boost::lexical_cast<std::string>(mass_) +
+                            "_" + boost::lexical_cast<std::string>(seed_) + ".hepmc";
             }
 
             // Check if there's already an extension on filename, if not add one
