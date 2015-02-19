@@ -1,0 +1,20 @@
+Executable = bbtautau.exe
+Universe = vanilla
+Output = job.$(cluster).$(process).out
+Error = job.$(cluster).$(process).err
+Log = job.$(cluster).$(process).log
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+notify_user = robin.aggleton@bristol.ac.uk
+
+request_cpus = 1
+request_memory = 500
+
+# use the ENV that is provided
+getenv = true
+initialdir = /storage/ra12451/bbtautau
+transfer_input_files = /users/ra12451/bbtautau_pheno/bbtautauCode/bbtautau.exe
+
+arguments = -n 1000 --write --mass 15 --seed 15 --name bbtautau_ma1_15_1000.hepmc
+queue
+
