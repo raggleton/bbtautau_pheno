@@ -2,7 +2,7 @@
 #define PYTHIAPROGRAMOPTS_H
 
 #include <iostream>
-
+#include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
@@ -17,9 +17,12 @@ class PythiaProgramOpts
     private:
         bool printEvent_;
         bool writeToHEPMC_;
+        bool writeToLHE_;
         int nEvents_;
-        std::string filename_;
+        std::string filenameHEPMC_;
+        std::string filenameLHE_;
         double mass_;
+        bool bbDecay_, tautauDecay_;
         bool verbose_;
         int seed_;
 
@@ -28,9 +31,13 @@ class PythiaProgramOpts
         PythiaProgramOpts(int argc, char* argv[]):
             printEvent_(false),
             writeToHEPMC_(false),
+            writeToLHE_(false),
             nEvents_(1),
-            filename_(""),
+            filenameHEPMC_(""),
+            filenameLHE_(""),
             mass_(15.),
+            bbDecay_(true),
+            tautauDecay_(true),
             verbose_(false),
             seed_(0)
         {
@@ -40,18 +47,28 @@ class PythiaProgramOpts
                 ("help,h", "Produce help message")
                 ("printEvent", po::bool_switch(&printEvent_)->default_value(false),
                     "Prints complete event listing of first event to screen")
-                ("write", po::bool_switch(&writeToHEPMC_)->default_value(false),
+                ("hepmc", po::bool_switch(&writeToHEPMC_)->default_value(false),
                     "write events to file in HepMC format")
+                ("lhe", po::bool_switch(&writeToLHE_)->default_value(false),
+                    "write events to file in LHE format")
                 ("number,n", po::value<int>(&nEvents_)->default_value(1),
                     "Number of events to run over [default = 1]. " \
                     "If writeHLT enabled, counts # events passing HLT. " \
                     "Otherwise, counts # events with 2+ muons.")
-                ("name", po::value<std::string>(&filename_),
+                ("nameHEPMC", po::value<std::string>(&filenameHEPMC_),
                     "Filename for output HepMC filename. " \
-                    "If you don't provide a value but enable -write, " \
+                    "If you don't provide a value but enable --hepmc, " \
                     "the default filename will be ma1_<mass>_<seed>.hepmc")
+                ("nameLHE", po::value<std::string>(&filenameLHE_),
+                    "Filename for output LHE filename. " \
+                    "If you don't provide a value but enable --lhe, " \
+                    "the default filename will be ma1_<mass>_<seed>.lhe")
                 ("mass", po::value<double>(&mass_)->default_value(15),
                     "Mass of a1 boson in GeV")
+                ("bb", po::bool_switch(&bbDecay_)->default_value(false),
+                    "Turn on a1 -> bb decay mode")
+                ("tautau", po::bool_switch(&tautauDecay_)->default_value(false),
+                    "Turn on a1 -> tautau decay mode")
                 ("seed", po::value<int>(&seed_)->default_value(0),
                     "Seed for random number generator. 0 = uses time. " \
                     "WARNING: DON'T USE 0 FOR BATCH SYSTEM. " \
@@ -83,26 +100,48 @@ class PythiaProgramOpts
                 exit(1);
             }
 
-            // Setup filename
-            if (writeToHEPMC_ && filename_ == "") {
-                filename_ = "ma1_" + boost::lexical_cast<std::string>(mass_) +
-                            "_" + boost::lexical_cast<std::string>(seed_) + ".hepmc";
+            // Setup filenames
+            if (filenameHEPMC_ == "") {
+                filenameHEPMC_ = "ma1_" + boost::lexical_cast<std::string>(mass_) +
+                                 "_" + boost::lexical_cast<std::string>(seed_) + ".hepmc";
+            }
+            if (filenameLHE_ == "") {
+                filenameLHE_ = "ma1_" + boost::lexical_cast<std::string>(mass_) +
+                               "_" + boost::lexical_cast<std::string>(seed_) + ".lhe";
             }
 
             // Check if there's already an extension on filename, if not add one
-            if(!boost::algorithm::ends_with(filename_, ".hepmc")) {
-                filename_ += ".hepmc";
+            std::string filenameHEPMClower(filenameHEPMC_);
+            boost::algorithm::to_lower(filenameHEPMClower);
+            if(!boost::algorithm::ends_with(filenameHEPMClower, ".hepmc")) {
+                filenameHEPMC_ += ".hepmc";
             }
 
+            // Check if there's already an extension on filename, if not add one
+            std::string filenameLHElower(filenameLHE_);
+            boost::algorithm::to_lower(filenameLHElower);
+            if(!boost::algorithm::ends_with(filenameLHElower, ".lhe")) {
+                filenameLHE_ += ".lhe";
+            }
+
+            // check we have a decay channel
+            if(!(bbDecay_ || tautauDecay_)) {
+                cout << "No decay channel specified" << endl;
+                exit(1);
+            }
 
         } // end of constructor
 
         // Getters
         bool printEvent() { return printEvent_; }
         bool writeToHEPMC() { return writeToHEPMC_; }
+        bool writeToLHE() { return writeToLHE_; }
         int nEvents() { return nEvents_; }
-        std::string filename() { return filename_; }
+        std::string filenameHEPMC() { return filenameHEPMC_; }
+        std::string filenameLHE() { return filenameLHE_; }
         double mass() { return mass_; }
+        bool bbDecay() { return bbDecay_; }
+        bool tautauDecay() { return tautauDecay_; }
         bool verbose() { return verbose_; }
         int seed() { return seed_; }
 
@@ -112,10 +151,17 @@ class PythiaProgramOpts
             cout << "PYTHIA PROGRAM OPTIONS" << endl;
             cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
             if (writeToHEPMC_)
-                cout << "Writing events to hepmc file " << filename_ << endl;
+                cout << "Writing events to hepmc file " << filenameHEPMC_ << endl;
+            if (writeToLHE_)
+                cout << "Writing events to lhe file " << filenameLHE_ << endl;
             cout << "Doing " << nEvents_ << " events" << endl;
             cout << "Random seed: " << seed_ << endl;
             cout << "Mass of a1: " << mass_ << endl;
+            cout << "Decays:" << endl;
+            if (bbDecay_)
+                cout << "a1 -> bb" << endl;
+            if (tautauDecay_)
+                cout << "a1 -> tautau" << endl;
             cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
         }
 
