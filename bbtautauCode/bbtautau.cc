@@ -50,21 +50,23 @@ int main(int argc, char *argv[]) {
     SSt << i;
     pythia.readString("25:" + SSt.str() + ":onMode = off");
   }
-  pythia.readString("25:addChannel = 1 .05 100 36 36");
+  pythia.readString("25:addChannel = 1 1 100 36 36");
   pythia.readString("36:m0 = " + boost::lexical_cast<std::string>(opts.mass()));
-  pythia.readString("36:mMin = 9.5");
+  pythia.readString("36:mMin = 3.5");
   pythia.readString("36:mWidth = 0.1");
 
-  if (opts.bbDecay() && ! opts.tautauDecay()) {
-    pythia.readString("36:oneChannel = 1 1 100 5 -5");
-  } else if (opts.tautauDecay() && ! opts.bbDecay()) {
-    pythia.readString("36:oneChannel = 1 1 100 15 -15");
-  } else if (opts.tautauDecay() && opts.bbDecay()) {
-    pythia.readString("36:oneChannel = 1 0.5 100 5 -5");
+  // Note that pythia auto rescales the total BR to 1.
+  // So even if we add tautau wiht BR = 0.5, if this is the only channel it
+  // will auto rescale to 1.
+  if (opts.bbDecay())
+    pythia.readString("36:addChannel = 1 0.5 100 5 -5");
+  if  (opts.tautauDecay())
     pythia.readString("36:addChannel = 1 0.5 100 15 -15");
-  }
   pythia.readString("Beams:eCM = 13000.");
+
+  // CUETP8M1 tune a la CMS
   pythia.readString("Tune:pp = 18");
+
   // pythia.readString("PartonLevel:all = off");
   // pythia.readString("PartonLevel:ISR = on");
   // pythia.readString("PartonLevel:FSR = on");
