@@ -64,10 +64,10 @@ int main(int argc, char *argv[]) {
     pythia.readString("36:addChannel = 1 0.5 100 15 -15");
   }
   pythia.readString("Beams:eCM = 13000.");
+  pythia.readString("Tune:pp = 18");
   // pythia.readString("PartonLevel:all = off");
   // pythia.readString("PartonLevel:ISR = on");
   // pythia.readString("PartonLevel:FSR = on");
-  // pythia.readString("PartonLevel:all = off");
 
   pythia.init();
 
