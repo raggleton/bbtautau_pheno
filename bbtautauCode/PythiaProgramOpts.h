@@ -100,13 +100,27 @@ class PythiaProgramOpts
                 exit(1);
             }
 
+            // check we have a decay channel, if so make it part of filename
+            std::string channel("");
+            if(!(bbDecay_ || tautauDecay_)) {
+                cout << "No decay channel specified" << endl;
+                exit(1);
+            } else {
+                if (bbDecay_) {
+                    channel += "_bb";
+                }
+                if (tautauDecay_) {
+                    channel += "_tautau";
+                }
+            }
+
             // Setup filenames
             if (filenameHEPMC_ == "") {
-                filenameHEPMC_ = "ma1_" + boost::lexical_cast<std::string>(mass_) +
+                filenameHEPMC_ = "ma1_" + boost::lexical_cast<std::string>(mass_) + channel +
                                  "_" + boost::lexical_cast<std::string>(seed_) + ".hepmc";
             }
             if (filenameLHE_ == "") {
-                filenameLHE_ = "ma1_" + boost::lexical_cast<std::string>(mass_) +
+                filenameLHE_ = "ma1_" + boost::lexical_cast<std::string>(mass_) + channel +
                                "_" + boost::lexical_cast<std::string>(seed_) + ".lhe";
             }
 
@@ -124,11 +138,6 @@ class PythiaProgramOpts
                 filenameLHE_ += ".lhe";
             }
 
-            // check we have a decay channel
-            if(!(bbDecay_ || tautauDecay_)) {
-                cout << "No decay channel specified" << endl;
-                exit(1);
-            }
 
         } // end of constructor
 
