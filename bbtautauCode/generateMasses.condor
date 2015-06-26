@@ -1,8 +1,10 @@
+hdfsdir = /hdfs/user/ra12451/bbtautau/
+
 Executable = bbtautau.exe
 Universe = vanilla
-Output = job.$(cluster).$(process).out
-Error = job.$(cluster).$(process).err
-Log = job.$(cluster).$(process).log
+Output = bbtautau.$(cluster).$(process).out
+Error = bbtautau.$(cluster).$(process).err
+Log = bbtautau.$(cluster).$(process).log
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT_OR_EVICT
 notify_user = robin.aggleton@bristol.ac.uk
@@ -13,10 +15,9 @@ request_disk = 30000000
 
 # use the ENV that is provided
 getenv = true
-initialdir = /storage/ra12451/bbtautau
+initialdir = $(hdfsdir)
 transfer_input_files = /users/ra12451/bbtautau_pheno/bbtautauCode/bbtautau.exe
 
-# Example:
-# arguments = -n 1000 --write --mass 15 --seed 15 --name bbtautau_ma1_15_1000.hepmc
-# queue
+arguments = -n 5000 --hepmc --mass 8 --tautau --seed 0 --nameHEPMC tautau_ma1_8_5000.hepmc
 
+queue
