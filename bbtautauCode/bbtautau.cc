@@ -48,14 +48,15 @@ int main(int argc, char *argv[]) {
   * and A->bb or A->tautau
   */
   pythia.readString("HiggsSM:gg2H = on");
-  pythia.readString("25:m0 = 125.");
+  pythia.readString("25:m0 = 450.");
   for (int i = 0; i < 76; i++) {
     // turn off all h(125) decay modes
     stringstream SSt;
     SSt << i;
     pythia.readString("25:" + SSt.str() + ":onMode = off");
   }
-  pythia.readString("25:addChannel = 1 1 100 36 36");
+  pythia.readString("25:addChannel = 1 1 100 23 36"); // h -> Z a
+  // pythia.readString("25:addChannel = 1 1 100 36 36"); // h -> a a
   pythia.readString("36:m0 = " + boost::lexical_cast<std::string>(opts.mass()));
   pythia.readString("36:mMin = 3.5");
   pythia.readString("36:mWidth = 0.1");
