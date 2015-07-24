@@ -1,0 +1,14 @@
+set automatic_html_opening False
+set pythia8_path /users/ra12451/pythia8209
+generate p p > b b~ [QCD]
+#add process p p > b b~ j [QCD] @ 1
+#add process p p > b b~ j j [QCD] @ 2
+output pp_bbx
+launch
+  set run_card nevents 100000
+  #set run_card ickkw 3
+  set run_card jetalgo 1
+  set run_card jetradius 1
+  set run_card parton_shower PYTHIA8
+  #set shower_card Qcut 20
+  #set shower_card njmax 2

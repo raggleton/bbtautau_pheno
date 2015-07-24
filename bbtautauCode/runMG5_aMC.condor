@@ -1,0 +1,25 @@
+hdfsdir = /hdfs/user/ra12451/bbtautau/Background
+
+Executable = runMG5_aMC.sh
+Universe = vanilla
+Output = $(hdfsdir)/mg5.$(cluster).$(process).out
+Error = $(hdfsdir)/mg5.$(cluster).$(process).err
+Log = $(hdfsdir)/mg5.$(cluster).$(process).log
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+notify_user = robin.aggleton@bristol.ac.uk
+
+request_cpus = 4
+request_memory = 4GB
+request_disk = 30000000
+
+# use the ENV that is provided
+getenv = true
+initialdir = $(hdfsdir)
+userdir = /users/ra12451/
+transfer_input_files = $(userdir)/zips/MG5_aMC_v2.3.0.tar.gz, $(userdir)/bbtautau_pheno/bbtautauCode/MG5_aMC_inputs, $(userdir)/zips/pythia8209.tgz
+
+# choose your process here!
+arguments = pp_bbx
+
+queue
