@@ -1,4 +1,5 @@
-hdfsdir = /hdfs/user/ra12451/bbtautau/Background
+channel = pp_bbx
+hdfsdir = /hdfs/user/ra12451/bbtautau/Background/$(channel)
 
 Executable = runMG5_aMC.sh
 Universe = vanilla
@@ -20,6 +21,6 @@ userdir = /users/ra12451/
 transfer_input_files = $(userdir)/zips/MG5_aMC_v2.3.0.tar.gz, $(userdir)/bbtautau_pheno/bbtautauCode/MG5_aMC_inputs, $(userdir)/zips/pythia8209.tgz
 
 # choose your process here!
-arguments = pp_bbx
+arguments = $(channel)
 
 queue
